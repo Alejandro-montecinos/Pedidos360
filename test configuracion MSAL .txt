@@ -1,0 +1,12 @@
+Client ID Frontend Id. de aplicación (cliente) : 
+f966785a-fe55-4f0b-bbe7-5dcd020b7408
+
+Tenant ID o también Id. de directorio (inquilino):
+092406df-0491-4c9e-8221-43d77ece03ff
+
+
+uri de redireccion:
+http://localhost:4200
+
+scope de la api ; esta ubicado en permisos de la api :
+api://3eeb07f5-efda-489c-a155-f998e6602e7f/access_as_user
