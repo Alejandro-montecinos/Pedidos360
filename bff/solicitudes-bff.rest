@@ -1,0 +1,54 @@
+### =========================================================================
+### PRUEBAS DEL BFF SPRING BOOT Y AWS API GATEWAY
+### =========================================================================
+
+@bff_url = http://localhost:8080
+@aws_gateway_url = https://pksr5i5ul6.execute-api.us-east-1.amazonaws.com
+
+@token = eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IlQ1aDQwcTdHMHg0OXFuNDFsTTkta0tqcEQ5OCIsImtpZCI6IlQ1aDQwcTdHMHg0OXFuNDFsTTkta0tqcEQ5OCJ9.eyJhdWQiOiJhcGk6Ly9iNDE5ODQ2Yi03YjM4LTQ2YmEtOTZhNS03ZTE4ZTI4N2E0NzYiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8wOTI0MDZkZi0wNDkxLTRjOWUtODIyMS00M2Q3N2VjZTAzZmYvIiwiaWF0IjoxNzg5MTE1Nzg3LCJuYmYiOjE3ODkxMTU3ODcsImV4cCI6MTc4OTEyMTIwOCwiYWNyIjoiMSIsImFpbyI6IkFjUUFPLzhlQUFBQXdIL1VDN2cybmhYdDBBQVkrbmNWSHZRQW9rTEorelBHRmp0bUdVOXhlVlJSdkxsWDFlL0g3NzhSYWEyYU1EblpyYUtDR3FTdjVsbTRoVUJTN2U4NFRHeExieTkwOW45WjNQQkpXM3VOUlFwNEdvR1dPK0ZRQ1c5di8vWk52eXltb1RSdW92bGNKc1puV2NOcGtYaWFIZXJtNStuTlZBcGVVUXRHbVhHZGJLR3BOT0RFVERGbWllcTh6a3daQmg5Y3lYa3MxQ2JPTUV6eTFNanZ2VmdmVys0eDZaWEsyamVPa1VBVnRBL25OYitKQ0xRZkJiWHRtUlROQUIvRStWbDAiLCJhbXIiOlsicHdkIiwibWZhIl0sImFwcGlkIjoiZTBmMTE1ZjctZDE2Zi00ZjRmLTg4ZTgtOTU5ZTg5MTA4M2UyIiwiYXBwaWRhY3IiOiIwIiwiZW1haWwiOiJhbGVqYW5kcm9tb250ZWNpbm8wMDJAZ21haWwuY29tIiwiZmFtaWx5X25hbWUiOiJtb250ZWNpbm9zIiwiZ2l2ZW5fbmFtZSI6ImFsZWphbmRybyIsImlkcCI6ImxpdmUuY29tIiwiaXBhZGRyIjoiMTg2LjEwNC45Mi43MiIsIm5hbWUiOiJhbGVqYW5kcm8gbW9udGVjaW5vcyIsIm9pZCI6ImMxM2U4OWI0LWM5NzUtNDBjOC05Mzc0LWI1MmI4MzJjYjZkZSIsInJoIjoiMS5BVzhCM3dZa0NaRUVua3lDSVVQWGZzNERfMnVFR2JRNGU3cEdscVYtR09LSHBIWUFBQmR2QVEuIiwic2NwIjoiYWNjZXNzX2FzX3VzZXIiLCJzaWQiOiIwMDhiMDlkYS00MDM2LTcxZDktNTMwZC00NWRkOGM4ODJkOWEiLCJzdWIiOiJKcS1GaEJDd2lidnE5dU9UandyM052R2xadVhzMkQwcWZKcThYdE14V29JIiwidGlkIjoiMDkyNDA2ZGYtMDQ5MS00YzllLTgyMjEtNDNkNzdlY2UwM2ZmIiwidW5pcXVlX25hbWUiOiJsaXZlLmNvbSNhbGVqYW5kcm9tb250ZWNpbm8wMDJAZ21haWwuY29tIiwidXRpIjoibTc3TWxxQlNja0dNQ1B6ZzFmS0tBQSIsInZlciI6IjEuMCIsInhtc19mdGQiOiJaejU5MDJVZ3RJbkQtMGhMcUZTUkQ0c1A0QjI2UElHMm9QMnNVZURhckd3QmRYTmxZWE4wTFdSemJYTSJ9.EHQyIv3oszhZqX_vAf6wjxKa9wgzS1KO88IPI2sMHhY8hjkmhxIBQ6f4IcS2AgMUuchn1eIynoFh2bOzqtlTEwrFXI7ki9PXnFIkjBuy3S2fD7kdey-VRfGqkRBq08drdBGw0Y8-UFCpNrgDfL3bjCNe4KVFkTh2mvzcXdNlZdBK_Toui0-bT-a6vWPNkyjbEra0b0VVcvRjqjECsOT-NVPS53FqVgNOBvD_zsY1QIe68ROMeRMPEdYQ8DWOUF6ysOkfckw6slLlcE_5RckXMAW8wuaW8zEnCqxkgbNhycGENqdt4gUK3h7n-hqYORQhku0kUsUCvR0wZ1V1DCUHPQ
+### -------------------------------------------------------------------------
+### SECCION A: PRUEBAS DIRECTAS AL BFF LOCAL (PUERTO 8080)
+### -------------------------------------------------------------------------
+
+##### 1. Probar Obtener Todos los Productos SIN TOKEN (Debe retornar HTTP 401 Unauthorized)
+GET {{bff_url}}/api/v1/productos
+Content-Type: application/json
+
+
+##### 2. Probar Obtener Todos los Productos CON TOKEN JWT
+GET {{bff_url}}/api/v1/productos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+
+##### 3. Buscar Producto por ID CON TOKEN JWT
+GET {{bff_url}}/api/v1/productos/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+
+##### 4. Agregar Producto CON TOKEN JWT
+POST {{bff_url}}/api/v1/productos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "nombre": "manzana bff",
+    "descripcion": "manzana roja importada",
+    "precio": 18500.5
+}
+
+
+### -------------------------------------------------------------------------
+### SECCION B: PRUEBAS A TRAVES DE AWS API GATEWAY (NUBE AWS)
+### -------------------------------------------------------------------------
+
+##### 5. Probar AWS API Gateway SIN TOKEN (Debe retornar HTTP 401 Unauthorized por AWS Authorizer)
+GET {{aws_gateway_url}}/api/v1/productos
+Content-Type: application/json
+
+
+##### 6. Probar AWS API Gateway CON TOKEN JWT (AWS Valida JWT -> Redirige al BFF)
+GET {{aws_gateway_url}}/api/v1/productos
+Authorization: Bearer {{token}}
+Content-Type: application/json

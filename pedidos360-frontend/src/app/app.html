@@ -1,276 +1,279 @@
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
-<!-- * * * * * * * * * * and can be replaced. * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * Delete the template below * * * * * * * * * -->
-<!-- * * * * * * * to get started with your project! * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- Microsoft Fluent UI Layout for Pedidos360 -->
 
-<style>
-:host {
-display: block;
-min-height: 100vh;
-font-family:
-Inter,
-system-ui,
--apple-system,
-BlinkMacSystemFont,
-"Segoe UI",
-sans-serif;
-color: #172033;
-}
+@if (cargandoAuth) {
+  <div class="pantalla-carga">
+    <div class="ms-spinner"></div>
+    <p>Iniciando servicio de autenticación Microsoft...</p>
+  </div>
+} @else if (!usuario) {
+  <!-- VISTA 1: LOGIN CON MICROSOFT -->
+  <main class="vista-login">
+    <section class="tarjeta-login">
+      <div class="ms-brand-header">
+        <div class="ms-logo">
+          <span class="sq red"></span>
+          <span class="sq green"></span>
+          <span class="sq blue"></span>
+          <span class="sq yellow"></span>
+        </div>
+        <span class="ms-brand-name">Microsoft Entra ID</span>
+      </div>
 
-* {
-box-sizing: border-box;
+      <div class="login-hero">
+        <h1>Pedidos360</h1>
+        <p class="subtitulo">Plataforma de Gestión de Productos & Pedidos</p>
+      </div>
 
+      <div class="callout-box">
+        <span class="callout-icon">🔐</span>
+        <p>Inicia sesión con tu cuenta corporativa o institucional para acceder a la consola de administración.</p>
+      </div>
 
+      <button type="button" class="btn-microsoft" (click)="iniciarSesion()">
+        <div class="ms-logo sm">
+          <span class="sq red"></span>
+          <span class="sq green"></span>
+          <span class="sq blue"></span>
+          <span class="sq yellow"></span>
+        </div>
+        <span>Iniciar sesión con Microsoft</span>
+      </button>
 
-}
+      @if (mensajeError) {
+        <div class="alerta alerta-error">
+          <span class="alerta-icono">⚠️</span>
+          <span>{{ mensajeError }}</span>
+        </div>
+      }
 
-.pagina {
-min-height: 100vh;
-display: grid;
-place-items: center;
-padding: 24px;
-background:
-radial-gradient(
-circle at top left,
-rgba(49, 130, 246, 0.24),
-transparent 38%
-),
-linear-gradient(135deg, #eef5ff 0%, #f8fafc 55%, #e8f1ff 100%);
-}
-
-.tarjeta {
-width: min(100%, 560px);
-padding: 40px;
-background: rgba(255, 255, 255, 0.94);
-border: 1px solid rgba(148, 163, 184, 0.28);
-border-radius: 24px;
-box-shadow: 0 24px 70px rgba(15, 23, 42, 0.14);
-}
-
-.marca {
-display: flex;
-align-items: center;
-gap: 18px;
-}
-
-
-
-.marca-icono {
-width: 64px;
-height: 64px;
-display: grid;
-place-items: center;
-flex-shrink: 0;
-color: #ffffff;
-font-size: 17px;
-font-weight: 800;
-background: linear-gradient(135deg, #2563eb, #0f4cbd);
-border-radius: 18px;
-box-shadow: 0 12px 25px rgba(37, 99, 235, 0.28);
-}
-
-.subtitulo {
-margin: 0 0 4px;
-color: #64748b;
-font-size: 14px;
-font-weight: 600;
-letter-spacing: 0.03em;
-text-transform: uppercase;
-}
-
-h1 {
-margin: 0;
-color: #0f172a;
-font-size: clamp(32px, 7vw, 46px);
-line-height: 1;
-}
-
-.descripcion {
-
-
-
-margin: 28px 0;
-color: #475569;
-font-size: 17px;
-line-height: 1.6;
-}
-
-.estado,
-.usuario {
-margin-bottom: 22px;
-padding: 18px;
-background: #f8fafc;
-border: 1px solid #dbe4ef;
-border-radius: 14px;
-}
-
-.usuario {
-display: flex;
-align-items: center;
-gap: 14px;
-}
-
-.usuario h2 {
-margin: 3px 0;
-color: #0f172a;
-font-size: 19px;
-}
-
-.usuario p {
-margin: 0;
-color: #64748b;
-word-break: break-word;
-
-
-
-}
-
-.usuario .etiqueta {
-color: #15803d;
-font-size: 13px;
-font-weight: 700;
-text-transform: uppercase;
-}
-
-.indicador {
-width: 12px;
-height: 12px;
-flex-shrink: 0;
-background: #22c55e;
-border-radius: 50%;
-box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.15);
-}
-
-.boton {
-width: 100%;
-padding: 14px 20px;
-border: 0;
-border-radius: 12px;
-font: inherit;
-font-weight: 700;
-cursor: pointer;
-transition:
-transform 150ms ease,
-box-shadow 150ms ease;
-}
-
-
-
-.boton:hover {
-transform: translateY(-1px);
-}
-
-.boton-principal {
-color: #ffffff;
-background: #2563eb;
-box-shadow: 0 10px 24px rgba(37, 99, 235, 0.24);
-}
-
-.boton-secundario {
-color: #1e3a8a;
-background: #dbeafe;
-}
-
-.error {
-margin: 18px 0 0;
-padding: 13px 15px;
-color: #991b1b;
-background: #fef2f2;
-border: 1px solid #fecaca;
-border-radius: 10px;
-}
-
-footer {
-margin-top: 28px;
-color: #94a3b8;
-font-size: 13px;
-text-align: center;
-}
-
-
-
-@media (max-width: 600px) {
-.tarjeta {
-padding: 28px 22px;
-}
-}
-</style>
-
-<main class="pagina">
-<section class="tarjeta">
-<div class="marca">
-<span class="marca-icono">P360</span>
-
-<div>
-<p class="subtitulo">Desarrollo Cloud Native I</p>
-<h1>{{ title }}</h1>
-</div>
-</div>
-
-<p class="descripcion">
-Aplicación Angular protegida mediante Microsoft Entra ID y MSAL.
-</p>
-
-@if (cargando) {
-<div class="estado">
-Inicializando autenticación...
-</div>
-} @else if (usuario) {
-<div class="usuario">
-<span class="indicador"></span>
-
-<div>
-
-
-
-<p class="etiqueta">Sesión iniciada</p>
-
-<h2>
-{{ usuario.name || 'Usuario autenticado' }}
-</h2>
-
-<p>
-{{ usuario.username }}
-</p>
-</div>
-</div>
-
-<button
-type="button"
-class="boton boton-secundario"
-(click)="cerrarSesion()"
->
-Cerrar sesión
-</button>
+      <footer class="login-footer">
+        Desarrollo Cloud Native I · Duoc UC · BFF Spring Boot & Angular MSAL
+      </footer>
+    </section>
+  </main>
 } @else {
-<div class="estado">
-No existe una sesión activa.
-</div>
+  <!-- VISTA 2: PRINCIPAL (REDIRECCIONADO DESPUÉS DEL LOGIN) -->
+  <div class="app-layout">
+    
+    <!-- BARRA SUPERIOR DE NAVEGACIÓN (MICROSOFT FLUENT STYLE) -->
+    <header class="ms-navbar">
+      <div class="navbar-brand">
+        <div class="ms-logo md">
+          <span class="sq red"></span>
+          <span class="sq green"></span>
+          <span class="sq blue"></span>
+          <span class="sq yellow"></span>
+        </div>
+        <div class="brand-text">
+          <span class="app-name">Pedidos360</span>
+          <span class="app-tag">Portal de Gestión</span>
+        </div>
+      </div>
 
-<button
-type="button"
-class="boton boton-principal"
-(click)="iniciarSesion()"
->
-Iniciar sesión con Microsoft
-</button>
+      <div class="navbar-actions">
+        <!-- Badge de Usuario Autenticado -->
+        <div class="user-badge">
+          <div class="avatar">{{ getInicialesUsuario() }}</div>
+          <div class="user-details">
+            <span class="user-name">{{ usuario.name || 'Usuario Autenticado' }}</span>
+            <span class="user-email">{{ usuario.username }}</span>
+          </div>
+        </div>
+
+        <!-- BOTÓN DE CERRAR SESIÓN EN LA ESQUINA SUPERIOR DERECHA -->
+        <button type="button" class="btn-logout" (click)="cerrarSesion()" title="Cerrar sesión activa">
+          <svg class="logout-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Cerrar sesión</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL DE LA VISTA -->
+    <main class="ms-container">
+
+      <!-- MENSAJES DE NOTIFICACIÓN / ALERTAS -->
+      @if (mensajeExito) {
+        <div class="alerta alerta-exito">
+          <span class="alerta-icono">✅</span>
+          <span class="alerta-texto">{{ mensajeExito }}</span>
+          <button class="alerta-cerrar" (click)="limpiarMensajes()">×</button>
+        </div>
+      }
+
+      @if (mensajeError) {
+        <div class="alerta alerta-error">
+          <span class="alerta-icono">❌</span>
+          <span class="alerta-texto">{{ mensajeError }}</span>
+          <button class="alerta-cerrar" (click)="limpiarMensajes()">×</button>
+        </div>
+      }
+
+      <!-- TABLA 1: FORMULARIO PRINCIPAL DE ENTRADA DE DATOS -->
+      <section class="card ms-card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-badge">Tabla 1</span>
+            <h2>Ingreso y Edición de Productos</h2>
+          </div>
+          @if (modoEdicion) {
+            <span class="tag tag-warning">Editando Producto #{{ formProducto.id_producto }}</span>
+          } @else {
+            <span class="tag tag-info">Nuevo Registro</span>
+          }
+        </div>
+
+        <form (ngSubmit)="guardarProducto()" class="form-grid">
+          <div class="form-group">
+            <label for="nombre">Nombre del Producto <span class="req">*</span></label>
+            <input
+              id="nombre"
+              type="text"
+              class="form-control"
+              [(ngModel)]="formProducto.nombre"
+              name="nombre"
+              placeholder="Ej: Teclado Mecánico RGB"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="precio">Precio ($ USD / CLP) <span class="req">*</span></label>
+            <input
+              id="precio"
+              type="number"
+              step="0.01"
+              min="0.01"
+              class="form-control"
+              [(ngModel)]="formProducto.precio"
+              name="precio"
+              placeholder="Ej: 49.99"
+              required
+            />
+          </div>
+
+          <div class="form-group full-width">
+            <label for="descripcion">Descripción</label>
+            <input
+              id="descripcion"
+              type="text"
+              class="form-control"
+              [(ngModel)]="formProducto.descripcion"
+              name="descripcion"
+              placeholder="Ej: Teclado ergonómico switches red..."
+            />
+          </div>
+
+          <div class="form-actions full-width">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="guardando"
+            >
+              @if (guardando) {
+                <span class="btn-spinner"></span>
+                <span>Guardando...</span>
+              } @else if (modoEdicion) {
+                <span>💾 Actualizar Producto</span>
+              } @else {
+                <span>➕ Guardar Producto en Tabla 2</span>
+              }
+            </button>
+
+            @if (modoEdicion) {
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="cancelarEdicion()"
+              >
+                Cancel / Volver a Nuevo
+              </button>
+            }
+          </div>
+        </form>
+      </section>
 
 
+      <!-- TABLA 2: TABLA DE INFORMACIÓN DE PRODUCTOS (INVENTARIO) -->
+      <section class="card ms-card">
+        <div class="card-header border-bottom">
+          <div class="card-title-group">
+            <span class="card-badge bg-azure">Tabla 2</span>
+            <div>
+              <h2>Información de Productos (Inventario)</h2>
+              <p class="card-sub">Conectado a BFF Spring Boot (`/api/v1/productos`)</p>
+            </div>
+          </div>
 
+          <div class="header-tools">
+            <span class="count-pill">{{ productos.length }} Productos</span>
+            <button type="button" class="btn-icon" (click)="cargarProductos()" title="Recargar inventario">
+              🔄 Actualizar
+            </button>
+          </div>
+        </div>
+
+        @if (cargandoProductos) {
+          <div class="state-container">
+            <div class="ms-spinner"></div>
+            <p>Cargando productos desde el servidor BFF...</p>
+          </div>
+        } @else if (productos.length === 0) {
+          <div class="state-container empty-state">
+            <span class="empty-icon">📦</span>
+            <h3>No hay productos registrados aún</h3>
+            <p>Usa la <strong>Tabla 1 (Formulario de arriba)</strong> para ingresar un producto y guardarlo.</p>
+          </div>
+        } @else {
+          <div class="table-responsive">
+            <table class="ms-table">
+              <thead>
+                <tr>
+                  <th style="width: 80px;">ID</th>
+                  <th>Nombre</th>
+                  <th>Descripción</th>
+                  <th style="width: 140px;" class="text-right">Precio</th>
+                  <th style="width: 160px;" class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (prod of productos; track prod.id_producto) {
+                  <tr [class.editing-row]="modoEdicion && formProducto.id_producto === prod.id_producto">
+                    <td class="cell-id">#{{ prod.id_producto }}</td>
+                    <td class="cell-name">
+                      <strong>{{ prod.nombre }}</strong>
+                    </td>
+                    <td class="cell-desc">{{ prod.descripcion || 'Sin descripción' }}</td>
+                    <td class="cell-price text-right">${{ prod.precio | number:'1.2-2' }}</td>
+                    <td class="cell-actions text-center">
+                      <button
+                        type="button"
+                        class="btn-table btn-edit"
+                        (click)="seleccionarParaEditar(prod)"
+                        title="Editar este producto en el formulario superior"
+                      >
+                        ✏️ Editar
+                      </button>
+                      <button
+                        type="button"
+                        class="btn-table btn-delete"
+                        (click)="eliminarProducto(prod.id_producto!)"
+                        title="Eliminar producto"
+                      >
+                        🗑️ Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </section>
+
+    </main>
+  </div>
 }
-
-@if (mensajeError) {
-<p class="error">
-{{ mensajeError }}
-</p>
-}
-
-<footer>
-Frontend Angular · Microsoft Entra ID · MSAL
-</footer>
-</section>
-</main>

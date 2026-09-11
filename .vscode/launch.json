@@ -8,6 +8,17 @@
             "mainClass": "com.duocuc.pedidosBackend.PedidosBackendApplication",
             "projectName": "pedidosBackend",
             "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=64009 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=pedidosBackend"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BffApplication<bff>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.duocuc.bff.BffApplication",
+            "projectName": "bff",
+            "args": "",
             "envFile": "${workspaceFolder}/.env"
         }
     ]
