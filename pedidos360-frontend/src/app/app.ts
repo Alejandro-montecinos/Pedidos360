@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { AccountInfo } from '@azure/msal-browser';
 import { MsalService } from '@azure/msal-angular';
-
 
 import {
 loginRequest,
@@ -23,25 +22,15 @@ usuario: AccountInfo | null = null;
 cargando = true;
 mensajeError = '';
 
-constructor(private readonly authService: MsalService) {}
+constructor(
+  private readonly authService: MsalService,
+  private readonly cdr: ChangeDetectorRef
+) {}
 
 async ngOnInit(): Promise<void> {
 try {
-/*
-* Inicializa MSAL antes de realizar cualquier operación
-* relacionada con la autenticación.
-*/
 await this.authService.instance.initialize();
 
-/*
-* Procesa la respuesta enviada por Microsoft Entra ID
-
-Pedidos360 · Material docente editable
-
-DSY1107 · Desarrollo Cloud Native I | Guía práctica de identidad
-
-* después de iniciar sesión.
-*/
 const resultado =
 await this.authService.instance.handleRedirectPromise();
 
@@ -57,6 +46,7 @@ this.mensajeError =
 'No fue posible inicializar la autenticación.';
 } finally {
 this.cargando = false;
+this.cdr.detectChanges();
 }
 }
 
@@ -69,11 +59,9 @@ console.error('Error al iniciar sesión:', error);
 
 this.mensajeError =
 'No fue posible iniciar sesión con Microsoft.';
+this.cdr.detectChanges();
 }
 });
-
-
-
 }
 
 cerrarSesion(): void {
@@ -86,6 +74,7 @@ console.error('Error al cerrar sesión:', error);
 
 this.mensajeError =
 'No fue posible cerrar la sesión.';
+this.cdr.detectChanges();
 }
 });
 }
