@@ -1,4 +1,4 @@
-# Stage 1: Build Microservice Spring Boot Application
+# Stage 1: Build Spring Boot BFF Application
 FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
 WORKDIR /app
 
@@ -14,6 +14,6 @@ WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
 
-EXPOSE 4545
+EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

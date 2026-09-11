@@ -15,7 +15,12 @@ export interface Producto {
   providedIn: 'root'
 })
 export class ProductoService {
-  private readonly apiUrl = 'http://localhost:8080/api/v1/productos';
+  private get apiUrl(): string {
+    if (typeof window !== 'undefined' && window.location && window.location.hostname) {
+      return `http://${window.location.hostname}:8080/api/v1/productos`;
+    }
+    return 'http://localhost:8080/api/v1/productos';
+  }
 
   constructor(
     private readonly http: HttpClient,

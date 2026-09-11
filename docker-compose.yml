@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  pedidos-backend:
+    build:
+      context: ./pedidosBackend
+      dockerfile: Dockerfile
+    container_name: pedidos-backend
+    restart: always
+    ports:
+      - "${BACKEND_SERVER_PORT:-4545}:4545"
+    environment:
+      - BACKEND_SERVER_PORT=4545
+      - DB_URL=${DB_URL:-jdbc:mysql://db-pedidos360.c7ybrmj1arev.us-east-1.rds.amazonaws.com:3306/pedidos360?esuSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+      - DB_USERNAME=${DB_USERNAME:-admin}
+      - DB_PASSWORD=${DB_PASSWORD:-Duoc.2025}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:4545/api-docs || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  pedidos-bff:
+    build:
+      context: ./bff/bff
+      dockerfile: Dockerfile
+    container_name: pedidos-bff
+    restart: always
+    ports:
+      - "${BFF_SERVER_PORT:-8080}:8080"
+    environment:
+      - BFF_SERVER_PORT=8080
+      - AZURE_TENANT_ID=${AZURE_TENANT_ID:-092406df-0491-4c9e-8221-43d77ece03ff}
+      - AZURE_CLIENT_ID=${AZURE_CLIENT_ID:-b419846b-7b38-46ba-96a5-7e18e287a476}
+      - AZURE_APP_ID_URI=${AZURE_APP_ID_URI:-api://b419846b-7b38-46ba-96a5-7e18e287a476}
+      - AZURE_FRONTEND_CLIENT_ID=${AZURE_FRONTEND_CLIENT_ID:-e0f115f7-d16f-4f4f-88e8-959e891083e2}
+      - MICROSERVICE_PEDIDOS_URL=http://pedidos-backend:4545
+    depends_on:
+      pedidos-backend:
+        condition: service_healthy
+
+  pedidos-frontend:
+    build:
+      context: ./pedidos360-frontend
+      dockerfile: Dockerfile
+    container_name: pedidos-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - pedidos-bff
