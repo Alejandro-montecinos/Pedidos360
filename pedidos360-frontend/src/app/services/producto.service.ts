@@ -16,10 +16,8 @@ export interface Producto {
 })
 export class ProductoService {
   private get apiUrl(): string {
-    if (typeof window !== 'undefined' && window.location && window.location.hostname) {
-      return `http://${window.location.hostname}:8080/api/v1/productos`;
-    }
-    return 'http://localhost:8080/api/v1/productos';
+    // Using relative URL so all traffic goes through nginx (no mixed content issues)
+    return `${window.location.origin}/api/v1/productos`;
   }
 
   constructor(
