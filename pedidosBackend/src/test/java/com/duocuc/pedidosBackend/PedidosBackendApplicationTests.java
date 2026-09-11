@@ -1,10 +1,10 @@
-package cl.duoc.pedidos360;
+package com.duocuc.pedidosBackend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Pedidos360BackendApplicationTests {
+class PedidosBackendApplicationTests {
 
 	@Test
 	void contextLoads() {

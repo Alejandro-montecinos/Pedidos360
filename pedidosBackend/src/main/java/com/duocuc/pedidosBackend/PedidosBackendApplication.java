@@ -1,13 +1,13 @@
-package cl.duoc.pedidos360;
+package com.duocuc.pedidosBackend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Pedidos360BackendApplication {
+public class PedidosBackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Pedidos360BackendApplication.class, args);
+		SpringApplication.run(PedidosBackendApplication.class, args);
 	}
 
 }

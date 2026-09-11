@@ -1,0 +1,45 @@
+##### Agregar Producto
+
+POST http://localhost:4545/api/v1/productos
+Content-Type: application/json
+
+{
+    
+    "nombre":"manzana",
+    "descripcion":"manzana roja",    
+    "precio":15000.7
+}
+
+##### obtener los producto
+GET  http://localhost:4545/api/v1/productos
+Content-Type: application/json
+
+
+##### buscar producto por id 
+GET  http://localhost:4545/api/v1/productos/1
+Content-Type: application/json
+
+{
+    
+    "nombre":"manzana",
+    "descripcion":"manzana roja",    
+    "precio":15000.7
+}
+
+##### actualizar producto
+PUT  http://localhost:4545/api/v1/productos/1
+Content-Type: application/json
+
+{
+    
+    "nombre":"manzana",
+    "descripcion":"manzana verde",    
+    "precio":15000.7
+}
+
+### eliminar un producto
+DELETE http://localhost:4545/api/v1/productos/1
+Content-Type: application/json
+
+
+
