@@ -52,6 +52,12 @@ public class VentaController {
         return ventaService.actualizarVenta( idVenta, ventaRequestActualizar);
     }
 
+    @GetMapping("/probar-envio")
+    public com.pedidos360.ventas.model.dto.VentaEventDTO probarEnvioRabbitMQ(
+            @org.springframework.web.bind.annotation.RequestParam(defaultValue = "Pedido1001") String mensaje) {
+        return ventaService.enviarPruebaRabbitMQ(mensaje);
+    }
+
     @DeleteMapping("/{idVenta}")
     public String eliminarVenta(@PathVariable int idVenta) {
         return ventaService.eliminarVenta(idVenta);

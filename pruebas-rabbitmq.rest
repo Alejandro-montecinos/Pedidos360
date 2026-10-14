@@ -1,0 +1,37 @@
+### =========================================================================
+### PRUEBAS DE COMUNICACIÓN ASÍNCRONA CON RABBITMQ
+### Microservicio Productor: ventas (Puerto 6767)
+### Microservicio Consumidor: pedidosBackend (Puerto 4545)
+### Broker RabbitMQ: localhost:5672 (Panel Web: http://localhost:15672)
+### =========================================================================
+
+### 1. ENVÍO DE PRUEBA RÁPIDA (Estilo guía práctica / navegador)
+### Envía un evento DTO en formato JSON a la cola pedidos.queue
+GET http://localhost:6767/ventas/probar-envio?mensaje=Pedido1001
+Content-Type: application/json
+
+
+### 2. CREACIÓN DE UNA VENTA REAL
+### Guarda la venta en la base de datos de ventas y publica el evento en RabbitMQ.
+### El microservicio pedidosBackend lo consumirá y validará contra su catálogo de productos.
+POST http://localhost:6767/ventas
+Content-Type: application/json
+
+{
+  "nombreCliente": "Juan Perez",
+  "nombreVendedor": "Maria Gonzalez",
+  "fechaVenta": "2026-10-14",
+  "totalVenta": 45000.0,
+  "metodoPago": "TARJETA_CREDITO",
+  "producto_id_producto": 1
+}
+
+
+### 3. OBTENER TODAS LAS VENTAS (Microservicio ventas)
+GET http://localhost:6767/ventas
+Content-Type: application/json
+
+
+### 4. CONSULTAR PRODUCTOS EN pedidosBackend (Microservicio productos)
+GET http://localhost:4545/api/v1/productos
+Content-Type: application/json
