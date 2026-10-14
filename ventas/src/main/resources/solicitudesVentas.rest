@@ -1,0 +1,37 @@
+
+### CREAR VENTA
+POST http://localhost:6767/ventas HTTP/1.1
+Content-Type: application/json
+
+{
+  "nombreCliente": "Juan Perez",
+  "nombreVendedor": "Maria Lopez",
+  "fechaVenta": "2026-10-14",
+  "totalVenta": 15990.0,
+  "metodoPago": "Debito",
+  "producto_id_producto": 1
+}
+
+### OBTENER TODAS LAS VENTAS
+GET http://localhost:6767/ventas HTTP/1.1
+Accept: application/json
+
+### OBTENER VENTA POR ID
+GET http://localhost:6767/ventas/1 HTTP/1.1
+Accept: application/json
+
+### ACTUALIZAR VENTA
+PUT http://localhost:6767/ventas/1 HTTP/1.1
+Content-Type: application/json
+
+{
+  "nombreCliente": "Juan Perez",
+  "nombreVendedor": "Maria Lopez",
+  "fechaVenta": "2026-10-14",
+  "totalVenta": 19990.0,
+  "metodoPago": "Credito",
+  "producto_id_producto": 1
+}
+
+### ELIMINAR VENTA
+DELETE http://localhost:6767/ventas/1 HTTP/1.1
