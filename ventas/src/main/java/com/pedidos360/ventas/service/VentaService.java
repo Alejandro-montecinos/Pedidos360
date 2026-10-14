@@ -16,6 +16,11 @@ public class VentaService {
 
     private VentaRepository ventaRepo;
 
+    // Inyección por constructor para el repositorio
+    public VentaService(VentaRepository ventaRepo) {
+        this.ventaRepo = ventaRepo;
+    }
+
     public List<Venta> obtenerVentas(){
         return ventaRepo.findAll();
     }
