@@ -20,6 +20,16 @@
             "projectName": "bff",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-VentasApplication<ventas>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.pedidos360.ventas.VentasApplication",
+            "projectName": "ventas",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

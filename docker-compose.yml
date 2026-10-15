@@ -38,9 +38,12 @@ services:
       - AZURE_APP_ID_URI=${AZURE_APP_ID_URI:-api://b419846b-7b38-46ba-96a5-7e18e287a476}
       - AZURE_FRONTEND_CLIENT_ID=${AZURE_FRONTEND_CLIENT_ID:-e0f115f7-d16f-4f4f-88e8-959e891083e2}
       - MICROSERVICE_PEDIDOS_URL=http://pedidos-backend:4545
+      - MICROSERVICE_VENTAS_URL=http://ventas-backend:6767
     depends_on:
       pedidos-backend:
         condition: service_healthy
+      ventas-backend:
+        condition: service_started
 
   pedidos-frontend:
     build:
@@ -67,8 +70,10 @@ services:
       - DB_USERNAME=${DB_USERNAME:-admin}
       - DB_PASSWORD=${DB_PASSWORD:-Duoc.2025}
       - RABBITMQ_HOST=rabbitmq
+      - PEDIDOS_BACKEND_URL=http://pedidos-backend:4545
     depends_on:
       - rabbitmq
+      - pedidos-backend
 
   rabbitmq:
     image: rabbitmq:4.2-management

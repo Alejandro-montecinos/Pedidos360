@@ -1,19 +1,53 @@
 ### =========================================================================
-### PRUEBAS DE COMUNICACIÓN ASÍNCRONA CON RABBITMQ
+### PRUEBAS DE VENTAS, VALIDACIÓN DE PRODUCTO Y RABBITMQ
 ### Microservicio Productor: ventas (Puerto 6767)
-### Microservicio Consumidor: pedidosBackend (Puerto 4545)
+### Microservicio Catálogo / Consumidor: pedidosBackend (Puerto 4545)
 ### Broker RabbitMQ: localhost:5672 (Panel Web: http://localhost:15672)
 ### =========================================================================
 
-### 1. ENVÍO DE PRUEBA RÁPIDA (Estilo guía práctica / navegador)
-### Envía un evento DTO en formato JSON a la cola pedidos.queue
-GET http://localhost:6767/ventas/probar-envio?mensaje=Pedido1001
+### -------------------------------------------------------------------------
+### PASO 0: CREAR / ASEGURAR UN PRODUCTO EN pedidosBackend (ID: 1)
+### -------------------------------------------------------------------------
+POST http://localhost:4545/api/v1/productos
+Content-Type: application/json
+
+{
+  "nombre": "Notebook Gamer Pro",
+  "descripcion": "Core i7 16GB RAM 512GB SSD",
+  "precio": 899990.0
+}
+
+### CONSULTAR PRODUCTOS EXISTENTES EN pedidosBackend
+GET http://localhost:4545/api/v1/productos
 Content-Type: application/json
 
 
-### 2. CREACIÓN DE UNA VENTA REAL
-### Guarda la venta en la base de datos de ventas y publica el evento en RabbitMQ.
-### El microservicio pedidosBackend lo consumirá y validará contra su catálogo de productos.
+### -------------------------------------------------------------------------
+### CASO A: INTENTO DE VENTA CON PRODUCTO INEXISTENTE (ID: 9999)
+### Resultado esperado: Error 404 "El producto con ID 9999 no fue encontrado"
+### -> NO se guarda en base de datos de ventas.
+### -> NO se emite mensaje a RabbitMQ.
+### -------------------------------------------------------------------------
+POST http://localhost:6767/ventas
+Content-Type: application/json
+
+{
+  "nombreCliente": "Carlos Sanchez",
+  "nombreVendedor": "Maria Gonzalez",
+  "fechaVenta": "2026-10-14",
+  "totalVenta": 50000.0,
+  "metodoPago": "EFECTIVO",
+  "producto_id_producto": 9999
+}
+
+
+### -------------------------------------------------------------------------
+### CASO B: VENTA CON PRODUCTO EXISTENTE (ID: 1)
+### Resultado esperado: Éxito 200 OK
+### -> SÍ se guarda la venta en la base de datos de ventas.
+### -> SÍ se publica el evento en RabbitMQ (pedidos.queue).
+### -> pedidosBackend consume el evento e imprime los datos en su consola.
+### -------------------------------------------------------------------------
 POST http://localhost:6767/ventas
 Content-Type: application/json
 
@@ -21,17 +55,21 @@ Content-Type: application/json
   "nombreCliente": "Juan Perez",
   "nombreVendedor": "Maria Gonzalez",
   "fechaVenta": "2026-10-14",
-  "totalVenta": 45000.0,
+  "totalVenta": 899990.0,
   "metodoPago": "TARJETA_CREDITO",
   "producto_id_producto": 1
 }
 
 
-### 3. OBTENER TODAS LAS VENTAS (Microservicio ventas)
+### -------------------------------------------------------------------------
+### CONSULTAR TODAS LAS VENTAS GUARDADAS EN BD (Microservicio ventas)
+### -------------------------------------------------------------------------
 GET http://localhost:6767/ventas
 Content-Type: application/json
 
 
-### 4. CONSULTAR PRODUCTOS EN pedidosBackend (Microservicio productos)
-GET http://localhost:4545/api/v1/productos
+### -------------------------------------------------------------------------
+### PRUEBA DIRECTA DE MENSAJERÍA RABBITMQ (Estilo laboratorio / navegador)
+### -------------------------------------------------------------------------
+GET http://localhost:6767/ventas/probar-envio?mensaje=Pedido1001
 Content-Type: application/json

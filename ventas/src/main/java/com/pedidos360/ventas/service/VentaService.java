@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.pedidos360.ventas.model.dto.ProductoDTO;
 import com.pedidos360.ventas.model.dto.VentaEventDTO;
 import com.pedidos360.ventas.model.entities.Venta;
 import com.pedidos360.ventas.model.request.VentaRequest;
@@ -17,11 +18,16 @@ public class VentaService {
 
     private final VentaRepository ventaRepo;
     private final VentaProducer ventaProducer;
+    private final ProductoClientService productoClientService;
 
     // Inyección por constructor
-    public VentaService(VentaRepository ventaRepo, VentaProducer ventaProducer) {
+    public VentaService(
+            VentaRepository ventaRepo,
+            VentaProducer ventaProducer,
+            ProductoClientService productoClientService) {
         this.ventaRepo = ventaRepo;
         this.ventaProducer = ventaProducer;
+        this.productoClientService = productoClientService;
     }
 
     public List<Venta> obtenerVentas(){
@@ -29,16 +35,21 @@ public class VentaService {
     }
 
     public Venta agregarVenta(VentaRequest ventaNueva){
+        // 1. Validar que el producto existe en pedidosBackend
+        int idProducto = ventaNueva.getProducto_id_producto();
+        ProductoDTO producto = productoClientService.obtenerProductoPorId(idProducto);
+
+        // 2. Si el producto existe, proceder a guardar la venta en la base de datos
         Venta ventaGuardada = new Venta();
         ventaGuardada.setNombreCliente(ventaNueva.getNombreCliente());
         ventaGuardada.setNombreVendedor(ventaNueva.getNombreVendedor());
         ventaGuardada.setFechaVenta(ventaNueva.getFechaVenta());
         ventaGuardada.setTotalVenta(ventaNueva.getTotalVenta());
         ventaGuardada.setMetodoPago(ventaNueva.getMetodoPago());
-        ventaGuardada.setProducto_id_producto(ventaNueva.getProducto_id_producto());
+        ventaGuardada.setProducto_id_producto(idProducto);
         Venta resultado = ventaRepo.save(ventaGuardada);
 
-        // Notificar a RabbitMQ
+        // 3. Notificar a pedidosBackend a través de RabbitMQ
         VentaEventDTO evento = VentaEventDTO.builder()
                 .idVenta(resultado.getId_venta())
                 .nombreCliente(resultado.getNombreCliente())
@@ -48,7 +59,7 @@ public class VentaService {
                 .metodoPago(resultado.getMetodoPago())
                 .productoIdProducto(resultado.getProducto_id_producto())
                 .tipoEvento("VENTA_REGISTRADA")
-                .mensaje("Nueva venta registrada exitosamente")
+                .mensaje("Venta exitosa del producto: " + producto.getNombre())
                 .build();
         ventaProducer.enviarVenta(evento);
 
@@ -85,6 +96,9 @@ public class VentaService {
         if (ventaExiste == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Venta no encontrada.");
         }
+
+        // Validar que el nuevo producto exista en pedidosBackend
+        productoClientService.obtenerProductoPorId(ventaEditada.getProducto_id_producto());
 
         ventaExiste.setNombreCliente(ventaEditada.getNombreCliente());
         ventaExiste.setNombreVendedor(ventaEditada.getNombreVendedor());
