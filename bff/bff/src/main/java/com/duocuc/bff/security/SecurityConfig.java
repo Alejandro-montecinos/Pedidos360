@@ -34,10 +34,10 @@ public class SecurityConfig {
     @Value("${azure.activedirectory.client-id}")
     private String clientId;
 
-    @Value("${azure.activedirectory.app-id-uri:api://b419846b-7b38-46ba-96a5-7e18e287a476}")
+    @Value("${azure.activedirectory.app-id-uri:api://68ea7d4c-e7d0-41bf-80da-b4efd986c72b}")
     private String appIdUri;
 
-    @Value("${azure.activedirectory.frontend-client-id:e0f115f7-d16f-4f4f-88e8-959e891083e2}")
+    @Value("${azure.activedirectory.frontend-client-id:2d53fcc2-04a2-4f88-b43f-9a48ec27d992}")
     private String frontendClientId;
 
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")

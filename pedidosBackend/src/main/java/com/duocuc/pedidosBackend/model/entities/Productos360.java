@@ -6,10 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Data;
 
 @Entity 
-@Data
 @Table(name = "Producto")
 public class Productos360 {
     
@@ -20,9 +18,50 @@ public class Productos360 {
     @Column(nullable = false)
     private String nombre;
     @Column(nullable = false)
-    private  String descripcion;
+    private String descripcion;
     @Column(nullable = false)
     private float precio;
 
+    public Productos360() {
+    }
+
+    public Productos360(int id_producto, String nombre, String descripcion, float precio) {
+        this.id_producto = id_producto;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.precio = precio;
+    }
+
+    public int getId_producto() {
+        return id_producto;
+    }
+
+    public void setId_producto(int id_producto) {
+        this.id_producto = id_producto;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public float getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(float precio) {
+        this.precio = precio;
+    }
 }
 

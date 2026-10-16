@@ -5,10 +5,10 @@ LogLevel
 } from '@azure/msal-browser';
 
 export const tenantId =
-'092406df-0491-4c9e-8221-43d77ece03ff';
+'86938a4d-8211-441d-8c29-09b3a9a53b48';
 
 export const frontendClientId =
-'e0f115f7-d16f-4f4f-88e8-959e891083e2';
+'2d53fcc2-04a2-4f88-b43f-9a48ec27d992';
 
 export const authority =
 `https://login.microsoftonline.com/${tenantId}`;
@@ -19,7 +19,7 @@ export const redirectUri =
     : 'http://localhost:4200';
 
 export const apiScope =
-'api://b419846b-7b38-46ba-96a5-7e18e287a476/access_as_user';
+'api://68ea7d4c-e7d0-41bf-80da-b4efd986c72b/access_as_user';
 
 export const msalConfig: Configuration = {
 auth: {
