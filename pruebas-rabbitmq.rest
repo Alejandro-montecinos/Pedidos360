@@ -73,3 +73,94 @@ Content-Type: application/json
 ### -------------------------------------------------------------------------
 GET http://localhost:6767/ventas/probar-envio?mensaje=Pedido1001
 Content-Type: application/json
+
+
+### -------------------------------------------------------------------------
+### CASO D: SIMULACIÓN DE FALLA -> PRUEBA DE DLQ (Dead Letter Queue)
+### Envía un mensaje con instrucción ERROR_DLQ
+### 1. VentaConsumer detecta el error y lanza excepción.
+### 2. Se emite basicNack(deliveryTag, false, false).
+### 3. RabbitMQ desvía automáticamente el mensaje a 'pedidos.dlq' vía 'pedidos.dlx'.
+### 4. Puedes ver el mensaje en la cola 'pedidos.dlq' en http://localhost:15672
+### -------------------------------------------------------------------------
+GET http://localhost:6767/ventas/probar-envio?mensaje=ERROR_DLQ
+Content-Type: application/json
+
+
+### =========================================================================
+### MICROSERVICIO ADMINISTRATIVO PROPIO DE RABBITMQ (Puerto 9090)
+### Crear y Eliminar: Colas, Exchanges y Bindings
+### Swagger UI independiente: http://localhost:9090/admin.html
+### =========================================================================
+
+### -------------------------------------------------------------------------
+### 1. COLAS: CREAR UNA NUEVA COLA
+### -------------------------------------------------------------------------
+POST http://localhost:9090/api/rabbitmq/admin/queues
+Content-Type: application/json
+
+{
+  "name": "notificaciones.demo.queue",
+  "durable": true,
+  "autoDelete": false,
+  "exclusive": false,
+  "deadLetterExchange": "pedidos.dlx",
+  "deadLetterRoutingKey": "pedidos.dlq.rk"
+}
+
+### -------------------------------------------------------------------------
+### 2. COLAS: CONSULTAR PROPIEDADES Y ESTADO DE LA COLA
+### -------------------------------------------------------------------------
+GET http://localhost:9090/api/rabbitmq/admin/queues/notificaciones.demo.queue
+Content-Type: application/json
+
+### -------------------------------------------------------------------------
+### 3. EXCHANGES: CREAR UN EXCHANGE (DIRECT, FANOUT, TOPIC O HEADERS)
+### -------------------------------------------------------------------------
+POST http://localhost:9090/api/rabbitmq/admin/exchanges
+Content-Type: application/json
+
+{
+  "name": "notificaciones.demo.exchange",
+  "type": "DIRECT",
+  "durable": true,
+  "autoDelete": false
+}
+
+### -------------------------------------------------------------------------
+### 4. BINDINGS: VINCULAR LA COLA CON EL EXCHANGE
+### -------------------------------------------------------------------------
+POST http://localhost:9090/api/rabbitmq/admin/bindings
+Content-Type: application/json
+
+{
+  "queueName": "notificaciones.demo.queue",
+  "exchangeName": "notificaciones.demo.exchange",
+  "routingKey": "notificaciones.alertas"
+}
+
+### -------------------------------------------------------------------------
+### 5. BINDINGS: ELIMINAR LA VINCULACIÓN (DESVINCULAR)
+### -------------------------------------------------------------------------
+DELETE http://localhost:9090/api/rabbitmq/admin/bindings
+Content-Type: application/json
+
+{
+  "queueName": "notificaciones.demo.queue",
+  "exchangeName": "notificaciones.demo.exchange",
+  "routingKey": "notificaciones.alertas"
+}
+
+### -------------------------------------------------------------------------
+### 6. EXCHANGES: ELIMINAR EL EXCHANGE
+### -------------------------------------------------------------------------
+DELETE http://localhost:9090/api/rabbitmq/admin/exchanges/notificaciones.demo.exchange
+Content-Type: application/json
+
+### -------------------------------------------------------------------------
+### 7. COLAS: ELIMINAR LA COLA
+### -------------------------------------------------------------------------
+DELETE http://localhost:9090/api/rabbitmq/admin/queues/notificaciones.demo.queue
+Content-Type: application/json
+
+
