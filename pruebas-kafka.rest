@@ -1,0 +1,76 @@
+### ==============================================================================
+### PRUEBAS REST - INTEGRACIÓN APACHE KAFKA & RABBITMQ
+### Microservicios: Administrativo (9090), Ventas (6767), PedidosBackend (4545)
+### ==============================================================================
+
+@adminUrl = http://localhost:9090/api/kafka/admin
+@ventasUrl = http://localhost:6767
+@pedidosUrl = http://localhost:4545
+
+### ------------------------------------------------------------------------------
+### 1. MICROSERVICIO ADMINISTRATIVO: GESTIÓN DE TÓPICOS KAFKA (Rúbrica: 6% + 12%)
+### ------------------------------------------------------------------------------
+
+### 1.1 Listar todos los tópicos creados en el clúster Kafka
+GET {{adminUrl}}/topics
+Accept: application/json
+
+### 1.2 Crear un nuevo tópico personalizado con particiones, réplicas y retención (7 días)
+POST {{adminUrl}}/topics
+Content-Type: application/json
+
+{
+  "nombre": "auditoria.eventos",
+  "particiones": 3,
+  "replicacion": 1,
+  "configs": {
+    "retention.ms": "604800000",
+    "cleanup.policy": "delete"
+  }
+}
+
+### 1.3 Obtener información detallada y particiones del tópico 'ventas.registradas'
+GET {{adminUrl}}/topics/ventas.registradas
+Accept: application/json
+
+### 1.4 Obtener información detallada del tópico 'pedidos.estado-actualizado'
+GET {{adminUrl}}/topics/pedidos.estado-actualizado
+Accept: application/json
+
+### 1.5 Inspeccionar los Grupos de Consumidores (Consumer Groups) y balanceo (Rúbrica: 12%)
+GET {{adminUrl}}/consumer-groups
+Accept: application/json
+
+### ------------------------------------------------------------------------------
+### 2. MICROSERVICIO VENTAS: PUBLICACIÓN DE EVENTOS EN KAFKA & RABBITMQ
+### ------------------------------------------------------------------------------
+
+### 2.1 Enviar Venta de Prueba (Dispara simultáneamente a RabbitMQ y Kafka tópico 'ventas.registradas')
+GET {{ventasUrl}}/ventas/probar-envio?mensaje=Venta-Kafka-Exitosa
+Accept: application/json
+
+### 2.2 Enviar Venta con simulación de Error (Para validar reintentos y tolerancia a fallos)
+GET {{ventasUrl}}/ventas/probar-envio?mensaje=ERROR_KAFKA
+Accept: application/json
+
+### 2.3 Crear Venta real (Valida producto en pedidosBackend, guarda en BD y emite a RabbitMQ y Kafka)
+POST {{ventasUrl}}/ventas
+Content-Type: application/json
+
+{
+  "nombreCliente": "Juan Perez",
+  "nombreVendedor": "Maria Lopez",
+  "fechaVenta": "2026-10-14",
+  "totalVenta": 15990.0,
+  "metodoPago": "Debito",
+  "producto_id_producto": 1
+}
+
+### ------------------------------------------------------------------------------
+### 3. MICROSERVICIO PEDIDOS: PUBLICACIÓN EN SEGUNDO TÓPICO KAFKA
+### ------------------------------------------------------------------------------
+
+### 3.1 Notificar cambio de estado en 'pedidos.estado-actualizado' (Consumido por Ventas)
+POST {{pedidosUrl}}/api/v1/productos/pedidos/101/estado?idVenta=101&estado=EN_PREPARACION&comentario=Pedido%20en%20preparación%20en%20bodega
+Content-Type: application/json
+

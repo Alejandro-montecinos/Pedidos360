@@ -28,6 +28,19 @@ public class ProductoController {
     @Autowired 
     ProductosService productosService;
 
+    @Autowired
+    com.duocuc.pedidosBackend.services.KafkaPedidoProducer kafkaPedidoProducer;
+
+    @PostMapping("/pedidos/{idPedido}/estado")
+    public String actualizarEstadoPedido(
+            @PathVariable int idPedido,
+            @org.springframework.web.bind.annotation.RequestParam(defaultValue = "1") int idVenta,
+            @org.springframework.web.bind.annotation.RequestParam(defaultValue = "EN_DESPACHO") String estado,
+            @org.springframework.web.bind.annotation.RequestParam(defaultValue = "Actualizado manualmente") String comentario) {
+        kafkaPedidoProducer.notificarCambioEstado(idPedido, idVenta, estado, comentario);
+        return "Evento de estado de pedido publicado en Kafka (tópico pedidos.estado-actualizado)";
+    }
+
 
     @GetMapping("")
     public List<Productos360> obtenerTodosLosProductos() {

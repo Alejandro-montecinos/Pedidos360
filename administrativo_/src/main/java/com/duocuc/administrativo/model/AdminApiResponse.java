@@ -18,6 +18,7 @@ public class AdminApiResponse {
 
     private boolean success;
     private String message;
+    private Object data;
     private Map<String, Object> details;
 
     public static AdminApiResponse ok(String message) {

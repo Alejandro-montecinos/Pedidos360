@@ -18,15 +18,18 @@ public class VentaService {
 
     private final VentaRepository ventaRepo;
     private final VentaProducer ventaProducer;
+    private final KafkaVentaProducer kafkaVentaProducer;
     private final ProductoClientService productoClientService;
 
     // Inyección por constructor
     public VentaService(
             VentaRepository ventaRepo,
             VentaProducer ventaProducer,
+            KafkaVentaProducer kafkaVentaProducer,
             ProductoClientService productoClientService) {
         this.ventaRepo = ventaRepo;
         this.ventaProducer = ventaProducer;
+        this.kafkaVentaProducer = kafkaVentaProducer;
         this.productoClientService = productoClientService;
     }
 
@@ -49,7 +52,7 @@ public class VentaService {
         ventaGuardada.setProducto_id_producto(idProducto);
         Venta resultado = ventaRepo.save(ventaGuardada);
 
-        // 3. Notificar a pedidosBackend a través de RabbitMQ
+        // 3. Notificar tanto por RabbitMQ como por Apache Kafka
         VentaEventDTO evento = VentaEventDTO.builder()
                 .idVenta(resultado.getId_venta())
                 .nombreCliente(resultado.getNombreCliente())
@@ -62,6 +65,7 @@ public class VentaService {
                 .mensaje("Venta exitosa del producto: " + producto.getNombre())
                 .build();
         ventaProducer.enviarVenta(evento);
+        kafkaVentaProducer.publicarEventoVenta(evento);
 
         return resultado;
     }
@@ -79,6 +83,7 @@ public class VentaService {
                 .mensaje(mensaje != null ? mensaje : "Pedido1001")
                 .build();
         ventaProducer.enviarVenta(evento);
+        kafkaVentaProducer.publicarEventoVenta(evento);
         return evento;
     }
 

@@ -21,7 +21,7 @@ Write-Host "==========================================" -ForegroundColor Cyan
 
 Start-Sleep -Seconds 1
 
-# Validar servicios base (MySQL y RabbitMQ)
+# Validar servicios base (MySQL, RabbitMQ y Kafka)
 $mysql = Get-NetTCPConnection -LocalPort 3306 -ErrorAction SilentlyContinue
 if (-not $mysql) {
     Write-Host " [ADVERTENCIA] MySQL no parece estar corriendo en el puerto 3306." -ForegroundColor Red
@@ -34,6 +34,13 @@ if (-not $rabbit) {
     Write-Host " [ADVERTENCIA] RabbitMQ no parece estar corriendo en el puerto 5672." -ForegroundColor Red
 } else {
     Write-Host " [OK] RabbitMQ activo en puerto 5672." -ForegroundColor Green
+}
+
+$kafka = Get-NetTCPConnection -LocalPort 9092 -ErrorAction SilentlyContinue
+if (-not $kafka) {
+    Write-Host " [ADVERTENCIA] Kafka no parece estar corriendo en el puerto 9092." -ForegroundColor Red
+} else {
+    Write-Host " [OK] Kafka activo en puerto 9092." -ForegroundColor Green
 }
 
 # 1. Iniciar microservicio pedidosBackend (Consumidor RabbitMQ - Puerto 4545)
@@ -87,4 +94,5 @@ Write-Host "  - administrativo : http://localhost:9090/admin.html" -ForegroundCo
 Write-Host "  - BFF            : http://localhost:8080" -ForegroundColor Magenta
 Write-Host "  - Frontend       : http://localhost:4200" -ForegroundColor Blue
 Write-Host "  - RabbitMQ Panel : http://localhost:15672 (guest/guest)" -ForegroundColor Yellow
+Write-Host "  - Kafka Broker   : localhost:9092" -ForegroundColor Green
 Write-Host "==========================================" -ForegroundColor Cyan
