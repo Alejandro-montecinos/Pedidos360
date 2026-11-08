@@ -11,7 +11,7 @@ services:
       - "${BACKEND_SERVER_PORT:-4545}:4545"
     environment:
       - BACKEND_SERVER_PORT=4545
-      - DB_URL=${DB_URL:-jdbc:mysql://db-pedidos360.cb0gk4weo997.us-east-1.rds.amazonaws.com:3306/pedidos360?esuSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+      - DB_URL=${DB_URL:-jdbc:mysql://db-pedidos360.cb0gk4weo997.us-east-1.rds.amazonaws.com:3306/pedidos360?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
       - DB_USERNAME=${DB_USERNAME:-admin}
       - DB_PASSWORD=${DB_PASSWORD:-Duoc.2025}
       - RABBITMQ_HOST=rabbitmq
@@ -68,7 +68,7 @@ services:
       - "${VENTAS_SERVER_PORT:-6767}:6767"
     environment:
       - VENTAS_SERVER_PORT=6767
-      - DB_URL=${DB_URL:-jdbc:mysql://db-pedidos360.cb0gk4weo997.us-east-1.rds.amazonaws.com:3306/pedidos360?esuSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+      - DB_URL=${DB_URL:-jdbc:mysql://db-pedidos360.cb0gk4weo997.us-east-1.rds.amazonaws.com:3306/pedidos360?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
       - DB_USERNAME=${DB_USERNAME:-admin}
       - DB_PASSWORD=${DB_PASSWORD:-Duoc.2025}
       - RABBITMQ_HOST=rabbitmq

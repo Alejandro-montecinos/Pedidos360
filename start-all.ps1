@@ -21,14 +21,7 @@ Write-Host "==========================================" -ForegroundColor Cyan
 
 Start-Sleep -Seconds 1
 
-# Validar servicios base (MySQL, RabbitMQ y Kafka)
-$mysql = Get-NetTCPConnection -LocalPort 3306 -ErrorAction SilentlyContinue
-if (-not $mysql) {
-    Write-Host " [ADVERTENCIA] MySQL no parece estar corriendo en el puerto 3306." -ForegroundColor Red
-} else {
-    Write-Host " [OK] MySQL activo en puerto 3306." -ForegroundColor Green
-}
-
+# Validar servicios base (RabbitMQ y Kafka)
 $rabbit = Get-NetTCPConnection -LocalPort 5672 -ErrorAction SilentlyContinue
 if (-not $rabbit) {
     Write-Host " [ADVERTENCIA] RabbitMQ no parece estar corriendo en el puerto 5672." -ForegroundColor Red
@@ -42,6 +35,8 @@ if (-not $kafka) {
 } else {
     Write-Host " [OK] Kafka activo en puerto 9092." -ForegroundColor Green
 }
+
+Write-Host " [OK] BD apuntando a AWS RDS (db-pedidos360.cb0gk4weo997.us-east-1.rds.amazonaws.com)." -ForegroundColor Green
 
 # 1. Iniciar microservicio pedidosBackend (Consumidor RabbitMQ - Puerto 4545)
 Write-Host ""

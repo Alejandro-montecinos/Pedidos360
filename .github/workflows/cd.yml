@@ -1,0 +1,71 @@
+name: CD - Deploy to AWS EC2
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy Application on EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Execute Remote SSH Commands on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            # 1. Directorio de la aplicación en el servidor
+            APP_DIR=~/Pedidos360
+            
+            if [ ! -d "$APP_DIR" ]; then
+              echo "Clonando repositorio por primera vez..."
+              git clone https://github.com/${{ github.repository }}.git $APP_DIR
+              cd $APP_DIR
+              chmod +x setup-ec2.sh
+              ./setup-ec2.sh
+            else
+              echo "Actualizando repositorio..."
+              cd $APP_DIR
+              git fetch origin main
+              git reset --hard origin/main
+            fi
+
+            # 2. Configurar variables de entorno desde los Secrets de GitHub
+            cat << 'EOF' > .env
+            DB_URL=${{ secrets.DB_URL }}
+            DB_USERNAME=${{ secrets.DB_USERNAME }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}
+            AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}
+            AZURE_APP_ID_URI=${{ secrets.AZURE_APP_ID_URI }}
+            AZURE_FRONTEND_CLIENT_ID=${{ secrets.AZURE_FRONTEND_CLIENT_ID }}
+            MICROSERVICE_PEDIDOS_URL=http://pedidos-backend:4545
+            MICROSERVICE_VENTAS_URL=http://ventas-backend:6767
+            BFF_SERVER_PORT=8080
+            BACKEND_SERVER_PORT=4545
+            VENTAS_SERVER_PORT=6767
+            ADMIN_SERVER_PORT=9090
+            KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+            RABBITMQ_HOST=rabbitmq
+            EOF
+
+            # 3. Reconstruir y levantar los contenedores actualizados
+            echo "Reconstruyendo y desplegando contenedores..."
+            docker compose down
+            docker compose up -d --build --remove-orphans
+
+            # 4. Limpieza de imágenes dangling para ahorrar espacio en disco
+            docker image prune -f
+
+            echo "=========================================="
+            echo " Despliegue completado con éxito en EC2!"
+            echo "=========================================="
+

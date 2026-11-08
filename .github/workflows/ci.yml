@@ -1,0 +1,48 @@
+name: CI - Build and Test Microservices
+
+on:
+  push:
+    branches: [ "main", "master", "develop" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-and-test:
+    name: Build & Test Java Microservices
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build administrativo_ (RabbitMQ & Kafka Admin)
+        run: |
+          cd administrativo_
+          chmod +x mvnw || true
+          mvn clean compile test -B
+
+      - name: Build ventas (Productor/Consumidor Kafka & RabbitMQ)
+        run: |
+          cd ventas
+          chmod +x mvnw || true
+          mvn clean compile test -B
+
+      - name: Build pedidosBackend (Consumidor/Productor Kafka & RabbitMQ)
+        run: |
+          cd pedidosBackend
+          chmod +x mvnw || true
+          mvn clean compile test -B
+
+      - name: Build BFF
+        run: |
+          cd bff/bff
+          chmod +x mvnw || true
+          mvn clean compile test -B
+
