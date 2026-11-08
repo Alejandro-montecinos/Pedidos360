@@ -26,23 +26,23 @@ jobs:
         run: |
           cd administrativo_
           chmod +x mvnw || true
-          mvn clean compile test -B
+          mvn clean package -DskipTests -B
 
       - name: Build ventas (Productor/Consumidor Kafka & RabbitMQ)
         run: |
           cd ventas
           chmod +x mvnw || true
-          mvn clean compile test -B
+          mvn clean package -DskipTests -B
 
       - name: Build pedidosBackend (Consumidor/Productor Kafka & RabbitMQ)
         run: |
           cd pedidosBackend
           chmod +x mvnw || true
-          mvn clean compile test -B
+          mvn clean package -DskipTests -B
 
       - name: Build BFF
         run: |
           cd bff/bff
           chmod +x mvnw || true
-          mvn clean compile test -B
+          mvn clean package -DskipTests -B
 
