@@ -10,9 +10,8 @@ export const tenantId =
 export const frontendClientId =
 '2d53fcc2-04a2-4f88-b43f-9a48ec27d992';
 
-// AzureADMultipleOrgs: cualquier cuenta de organización Microsoft puede iniciar sesión
 export const authority =
-'https://login.microsoftonline.com/organizations';
+`https://login.microsoftonline.com/${tenantId}`;
 
 export const redirectUri =
   typeof window !== 'undefined' && window.location && window.location.origin
