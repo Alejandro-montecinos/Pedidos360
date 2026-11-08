@@ -80,6 +80,20 @@ public class KafkaVentaConsumer {
                     "Pedido validado y en preparación tras evento Kafka de venta"
             );
 
+            // Registro en tópico de auditoría
+            kafkaPedidoProducer.publicarEnTopico(
+                    KafkaConfig.TOPIC_AUDITORIA_EVENTOS,
+                    String.valueOf(evento.getIdVenta()),
+                    java.util.Map.of(
+                            "modulo", "VENTAS_CONSUMER",
+                            "accion", "VENTA_PROCESADA_KAFKA",
+                            "idVenta", evento.getIdVenta(),
+                            "cliente", evento.getNombreCliente() != null ? evento.getNombreCliente() : "",
+                            "total", evento.getTotalVenta(),
+                            "timestamp", java.time.LocalDateTime.now().toString()
+                    )
+            );
+
             log.info(" -> [KAFKA OK] Procesamiento de venta #{} completado y evento de estado emitido.", evento.getIdVenta());
 
         } catch (Exception e) {

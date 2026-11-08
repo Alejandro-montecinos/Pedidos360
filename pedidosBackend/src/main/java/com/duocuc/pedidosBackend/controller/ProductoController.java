@@ -54,13 +54,61 @@ public class ProductoController {
 
     @PostMapping("")
     public Productos360 agregarProducto (@RequestBody AgregarProducto agregarProducto) {
-        return productosService.agregarProducto(agregarProducto);
+        Productos360 prod = productosService.agregarProducto(agregarProducto);
+        if (prod != null && kafkaPedidoProducer != null) {
+            kafkaPedidoProducer.publicarEnTopico(
+                com.duocuc.pedidosBackend.config.KafkaConfig.TOPIC_PRODUCTOS_STOCK,
+                String.valueOf(prod.getId_producto()),
+                java.util.Map.of(
+                    "evento", "PRODUCTO_CREADO",
+                    "idProducto", prod.getId_producto(),
+                    "nombre", prod.getNombre(),
+                    "precio", prod.getPrecio(),
+                    "timestamp", java.time.LocalDateTime.now().toString()
+                )
+            );
+            kafkaPedidoProducer.publicarEnTopico(
+                com.duocuc.pedidosBackend.config.KafkaConfig.TOPIC_AUDITORIA_EVENTOS,
+                String.valueOf(prod.getId_producto()),
+                java.util.Map.of(
+                    "modulo", "INVENTARIO",
+                    "accion", "CREACION_PRODUCTO",
+                    "detalle", "Producto creado: " + prod.getNombre(),
+                    "timestamp", java.time.LocalDateTime.now().toString()
+                )
+            );
+        }
+        return prod;
     }
 
 
     @PutMapping("/{idP}")
     public Productos360 actualizarProducto (@RequestBody ActualizarMarca actualizarMarca, @PathVariable int idP){
-        return productosService.actualizarProducto(actualizarMarca, idP);
+        Productos360 prod = productosService.actualizarProducto(actualizarMarca, idP);
+        if (prod != null && kafkaPedidoProducer != null) {
+            kafkaPedidoProducer.publicarEnTopico(
+                com.duocuc.pedidosBackend.config.KafkaConfig.TOPIC_PRODUCTOS_STOCK,
+                String.valueOf(idP),
+                java.util.Map.of(
+                    "evento", "PRODUCTO_ACTUALIZADO",
+                    "idProducto", idP,
+                    "nombre", prod.getNombre(),
+                    "precio", prod.getPrecio(),
+                    "timestamp", java.time.LocalDateTime.now().toString()
+                )
+            );
+            kafkaPedidoProducer.publicarEnTopico(
+                com.duocuc.pedidosBackend.config.KafkaConfig.TOPIC_AUDITORIA_EVENTOS,
+                String.valueOf(idP),
+                java.util.Map.of(
+                    "modulo", "INVENTARIO",
+                    "accion", "ACTUALIZACION_PRODUCTO",
+                    "detalle", "Producto actualizado ID: " + idP,
+                    "timestamp", java.time.LocalDateTime.now().toString()
+                )
+            );
+        }
+        return prod;
     }
 
     @DeleteMapping("/{idP}")
