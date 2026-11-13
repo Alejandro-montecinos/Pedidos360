@@ -7,7 +7,9 @@ Tenant ID o también Id. de directorio (inquilino):
 
 
 uri de redireccion:
-http://localhost:4200
+- Local: http://localhost:4200
+- Producción (EC2 actual): http://32.199.81.63
+- Producción (EC2 con barra): http://32.199.81.63/
 
 scope de la api ; esta ubicado en permisos de la api :
 api://68ea7d4c-e7d0-41bf-80da-b4efd986c72b/access_as_user
